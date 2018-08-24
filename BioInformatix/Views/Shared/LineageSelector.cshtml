@@ -1,0 +1,62 @@
+﻿@model IDictionary<int, IList<string>> 
+    @{
+        bool isEmpty = ViewBag.TaxonNames == null || ViewBag.TaxonNames.Count == 0;
+    }
+<style>
+    label.chbutt {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 0 0 10px;
+    }
+
+        label.chbutt:hover {
+            background: #eee;
+            cursor: pointer;
+        }
+    div.taxon {
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+</style>
+<script>
+    function getCheckedGroups()
+    {
+        var taxons = [];
+        $(".lineageCheck").each(function () {
+            if ($(this).is(':checked')) { taxons.push($(this).val()); }
+        });
+        return taxons;
+    }
+
+    function setCheckGroup(taxon) {
+        var taxons = [];
+        $(".lineageCheck").each(function () {
+            if ($(this).val() == taxon) { $(this).attr('checked', 'checked'); }
+        });
+    }
+</script>
+<div id="taxonGroups" style="display:none">
+    
+    @foreach (var line in Model.OrderBy(x => x.Key))
+    {
+        <div class="taxon" width="100%">
+            @foreach (string s in line.Value)
+            {
+                string s2 = "" + s;
+                if (!isEmpty && ViewBag.TaxonNames.Contains(s))
+                {
+                <label class="chbutt" for="@(s)"><input value="@(s)" type="checkbox" id="@(s)" class="lineageCheck" checked="checked" style="margin-right:5px" />@(s2)</label>
+                }
+                else
+                {
+                    <label class="chbutt" for="@(s)"><input value="@(s)" type="checkbox" id="@(s)" class="lineageCheck" style="margin-right:5px" />@(s2)</label>
+                }
+            }
+        </div>
+    }
+    <input type="button" value="Vybrat podle skupin" class="btn btn-default" onclick="ReloadGrid();" />
+    <input type="button" value="Označit vybrané" class="btn btn-default" onclick="selectMarked();" />
+    <input type="button" value="Odznačit" class="btn btn-default" onclick="unselectMarked();" />
+    
+</div>
+

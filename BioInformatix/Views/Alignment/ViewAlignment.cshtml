@@ -1,0 +1,49 @@
+﻿@*@model IList<BioInformatix.Class.AlignRecord>
+    @{ 
+        Layout = "";
+        string content = String.Empty;
+
+    }
+    <table>
+        <tr>
+            <td>
+                @{foreach (BioInformatix.Class.AlignRecord rec in Model) {
+                        content += rec.AlignedSequence + "\n";
+                        <span style="border:solid 1px">@rec.Organism</span><br/>
+                    }
+                }
+            </td><td>
+            <textarea rows="@(Model.Count)">@(content)</textarea>
+            
+            </td>
+        </tr>
+    </table>*@
+
+@model IList<BioInformatix.Class.AlignRecord>
+@{
+    ViewBag.Title = "ViewAlignmentRaw";
+    int columns = 100;
+    int rows = Model.Count / columns;
+}
+
+<h2>Zarovnání</h2>
+<br />
+
+@for (int i = 0; i < rows; i++)
+{
+    <table>
+        @foreach (BioInformatix.Class.AlignRecord rec in Model)
+        {
+            <tr><td>@rec.Organism</td><td>@(rec.AlignedSequence.Substring(i * columns, columns))</td><td>@((i * columns) + columns) </td></tr>
+        }
+    </table>
+    <br />
+}
+<table>
+    @foreach (BioInformatix.Class.AlignRecord rec in Model)
+    {
+        <tr><td>@rec.Organism</td><td>@(rec.AlignedSequence.Substring(rows * columns))</td><td>@(rec.AlignedSequence.Length) </td></tr>
+    }
+</table>
+
+

@@ -1,0 +1,265 @@
+﻿@model BioInformatix.Models.SequenceProjectModel
+  @using BioInformatix.Class
+
+@{
+    ViewBag.Title = "ProjectEdit";
+
+}
+
+
+<style>
+        div.k-window {
+            display: none !important;
+        }
+</style>
+<script>
+
+    function getParameters() {
+        return {
+            projectId: "@Model.Project.IdString",
+            taxons: getCheckedGroups()
+        };
+    }
+
+    function getAlignmentParameters() {
+        return {
+            projectId: "@Model.Project.IdString"
+        };
+    }
+
+    function ReloadGrid(){
+        var grid = $("#GridSekvence").data("kendoGrid");
+        grid.dataSource.read();
+    }
+
+    function ReloadAlignmentGrid() {
+        var grid = $("#GridAlignment").data("kendoGrid");
+        grid.dataSource.read();
+    }
+
+    function displayTaxonGroups() {
+        $("#taxonGroups").toggle();
+    }
+
+    function changeSelection(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Project/ChangeSequenceSelection/",
+            data: { seqId: id },
+            success: function (data) {
+            }
+        });
+    }
+
+    function selectMarked() {
+        $.ajax({
+            type: "POST",
+            url: "/Project/ChangeMarkedSequenceSelection/",
+            data: { projectId: "@Model.Project.IdString", taxons: getCheckedGroups() },
+            success: function (data) {
+                ReloadGrid();
+            }
+        });
+    }
+
+    function unselectMarked() {
+        $.ajax({
+            type: "POST",
+            url: "/Project/UnselectSequenceSelection/",
+            data: { projectId: "@Model.Project.IdString" },
+            success: function (data) {
+                ReloadGrid();
+            }
+        });
+    }
+
+		function addAligment() {
+			$('body').loadingModal({ text: 'Připravují se data...' });
+        $.ajax({
+            type: "POST",
+            url: "/Alignment/AddAligment/",
+            data: { projectId: "@Model.Project.IdString", title: $("#aligmentTitle").val() },
+						success: function (data) {
+							$('body').loadingModal("hide");
+                ReloadAlignmentGrid();
+            }
+        });
+    }
+
+    function delSequence() {
+        $.ajax({
+            type: "POST",
+            url: "/Project/DeleteSequenceForProject/",
+            data: { projectId: "@Model.Project.IdString", isBlast: false },
+            success: function (data) {
+                ReloadGrid();
+            }
+        });
+    }
+
+		function addTree(id) {
+			$('body').loadingModal({ text: 'Připravují se data...' });
+        $.ajax({
+            type: "POST",
+            url: "/Tree/AddTree/",
+            data: { projectId: "@Model.Project.IdString", alignmentId: id },
+						success: function (data) {
+							$('body').loadingModal("hide");
+                ReloadAlignmentGrid();
+            }
+        });
+    }
+
+		function getTreeResult(id) {
+			$('body').loadingModal({ text: 'Připravují se data...' });
+        $.ajax({
+            type: "POST",
+            url: "/Tree/GetTreeResult/",
+            data: { projectId: "@Model.Project.IdString", alignmentId: id },
+						success: function (data) {
+							$('body').loadingModal("hide");
+                if (data == true) {
+                    ReloadAlignmentGrid();
+                } else alert("Výsledek ještě není hotov");
+            }
+        });
+    }
+
+        function getTree(id) {
+            window.location.href('/Tree/ViewTree?projectId=' + "@Model.Project.IdString" + "&alignmentId=" + id);
+    }
+
+				function getAlignmentResult(id) {
+					$('body').loadingModal({ text: 'Připravují se data...' });
+        $.ajax({
+            type: "POST",
+            url: "/Alignment/GetAlignmentResult/",
+            data: { projectId: "@Model.Project.IdString", alignmentId: id },
+						success: function (data) {
+							$('body').loadingModal("hide");
+                if (data == true) {
+                    ReloadAlignmentGrid();
+                } else alert("Výsledek ještě není hotov");
+            }
+        });
+    }
+
+    function getAlignment(id) {
+        window.location.href('/Alignment/ViewAlignment?projectId=' + "@Model.Project.IdString" + "&alignmentId=" + id);
+    }
+</script>
+
+    @using (Html.BeginForm())
+    {
+      
+    <div class="row">
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>@Model.Project.Name</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Project.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Project.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Project.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Project.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Project.Description, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Project.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <span><input type="button" value="Vybrání taxonomických skupin" class="btn btn-default" onclick="displayTaxonGroups();" /></span>
+        <br />
+        @Html.Partial("LineageSelector", Model.LineageForView)
+        
+    </div>
+    <br />
+    <div class="row">
+        
+        <h4><span>Sekvence pro projekt</span></h4>
+        <input type="button" value="Smazání Cazy sekvencí" class="btn btn-success" onclick="delSequence();" /><input type="button" value="Zarovnání sekvencí - Clustal Omega" class="btn btn-success" onclick="addAligment();" />
+        <input type="text" id="aligmentTitle" />
+        @(Html.Kendo().Grid<BioInformatix.Class.Sequence>()
+        .Name("GridSekvence")
+        .Sortable()
+            .Pageable(pageable => pageable
+            .Refresh(true))
+                                       .Filterable(filter => filter.Enabled(true)
+                                       .Operators(o => o.ForEnums(e => e.Clear()
+                                       .IsEqualTo("Rovná se")
+                                       .IsNotEqualTo("Nerovná se"))))
+            .DataSource(dataSource =>
+            {
+                dataSource.Ajax().Read(read => read.Action("SelectSequeceForProject", "Project").Data("getParameters"))
+              .Model(model => model.Id(p => p.IdString));
+            })
+
+.Columns(columns =>
+{
+    columns.Bound(o => o.Name).Title("Název");
+    columns.Bound(o => o.Organism).Title("Organismus");
+    columns.Bound(o => o.Selected).Title("Sel/Unsel").ClientTemplate("<input type='checkbox' #= Selected ? checked='checked' :'' # onchange=\"changeSelection('#=IdString#')\" />").Width(50);
+}))
+    </div>
+
+    <h4><span>Vytvořená zarovnání pro projekt</span></h4>
+    <div class="row">
+        @(Html.Kendo().Grid<BioInformatix.Class.AlignmentSequence>()
+				.Name("GridAlignment")
+				.Sortable()
+						.Pageable(pageable => pageable
+						.Refresh(true))
+																			 .Filterable(filter => filter.Enabled(true)
+																			 .Operators(o => o.ForEnums(e => e.Clear()
+																			 .IsEqualTo("Rovná se")
+																			 .IsNotEqualTo("Nerovná se"))))
+						.DataSource(dataSource =>
+						{
+							dataSource.Ajax().Read(read => read.Action("SelectAlignmentForProject", "Alignment").Data("getAlignmentParameters"))
+						.Model(model => model.Id(p => p.IdString));
+						})
+
+.Columns(columns =>
+{
+	columns.Bound(o => o.Description).Title("Popis");
+	columns.Bound(o => o.Created).Format("{0:dd-MM-yyyy}").Title("Vytvořeno");
+	columns.Bound(o => o.IsFinished).Title("Akce").Width(600).ClientTemplate("#if (AlignmentGuid != null && !IsFinished) {#" +
+"<input type='button' value='Výsledek' class='btn btn-warning' onclick='getAlignmentResult(\"#=IdString#\")' />" +
+"#}#" +
+"#if (IsFinished) {#" +
+"<input type='button' value='Zobrazit' class='btn btn-warning' onclick='getAlignment(\"#=IdString#\")' />" +
+"#}#" +
+"#if (PhylogeneticGuid == null && AlignmentGuid != null && IsFinished) {#" +
+"<input type='button' value='Strom-vytvořit' class='btn btn-warning' onclick='addTree(\"#=IdString#\")' />" +
+"#}#" +
+"#if (PhylogeneticGuid != null && PhylogeneticTree == null) {#" +
+"<input type='button' value='Strom-výsledek' class='btn btn-warning' onclick='getTreeResult(\"#=IdString#\")' />" +
+"#}#" +
+"#if (PhylogeneticTree != null) {#" +
+"<input type='button' value='Strom-zobrazit' class='btn btn-warning' onclick='getTree(\"#=IdString#\")' />" +
+"#}#");
+}))
+
+
+        <br/>
+        @Html.ActionLink("Zpět na přehled projektů", "Index", "Project", new { @class = "btn btn-default" })
+    </div>
+    }
+

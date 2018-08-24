@@ -1,0 +1,35 @@
+﻿@model BioInformatix.Models.TreeModel
+@{
+    ViewBag.Title = "ViewTree";
+}
+
+<h2>@(Model.AlignmentName) - strom</h2>
+<style>
+    textarea {
+        white-space: pre;
+        overflow-wrap: normal;
+        overflow-x: scroll;
+    }
+</style>
+<div>
+    @Html.ActionLink("Zpět na projekt", "ProjectEdit", "Project", new { projectId = Model.ProjectId }, new { @class = "btn btn-default" })
+</div>
+<div>
+    <a href="http://etetoolkit.org/treeview/" class="btn btn-default" target="_blank">ETE Toolkit</a>
+</div>
+@using (Html.BeginForm("AddTreePicture", "Tree", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(x=> x.AlignmentId)
+    @Html.HiddenFor(x => x.ProjectId)
+    <input type="file" name="file" required />
+    <button type="submit" class="btn btn-success btn-nav"><span class="glyphicon glyphicon-floppy-save"></span>&nbsp;Přidat strom</button>
+}
+
+<br/>
+<br/>
+<textarea wrap="soft" style="border:solid 1px; padding:15px;margin:10px;max-width:1000px;min-width:1000px;min-height:300px">@Model.TreeString</textarea>
+<div>
+    @Html.Raw(Model.TreeFile)                                                                                             
+    
+</div>
+

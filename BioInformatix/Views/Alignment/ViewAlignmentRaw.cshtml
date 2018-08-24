@@ -1,0 +1,35 @@
+﻿@model BioInformatix.Models.AlignmentModel
+@{
+    ViewBag.Title = "ViewAlignmentRaw";
+    int columns = 100;
+    int rows = Model.AlignmentSequences[0].AlignedSequence.Length / columns;
+}
+
+<h2>@(Model.AlignmentName) - zarovnání</h2>
+<br/>
+<div>
+    @Html.ActionLink("Zpět na projekt", "ProjectEdit", "Project", new { projectId = Model.ProjectId }, new { @class = "btn btn-default" })
+</div>
+@Html.HiddenFor(x => x.AlignmentId)
+@Html.HiddenFor(x => x.ProjectId)
+
+@for(int i = 0; i < rows; i++)
+{
+    <table>
+        @foreach(BioInformatix.Class.AlignRecord rec in Model.AlignmentSequences)
+        {
+					int rest = rec.AlignedSequence.Length > (i * columns) + columns ? columns : rec.AlignedSequence.Length - (i * columns);
+            <tr><td>@rec.Organism</td><td><span style="font-family: 'Courier New', Courier, monospace;">@(rec.AlignedSequence.Substring(i * columns, rest))</span></td><td>@((i * columns) + rest)</td></tr>
+        }
+    </table>
+    <br/>
+}
+<table>
+    @foreach (BioInformatix.Class.AlignRecord rec in Model.AlignmentSequences)
+		{
+			if (rows * columns < rec.AlignedSequence.Length)
+			{
+        <tr><td>@rec.Organism</td><td><span style="font-family: 'Courier New', Courier, monospace;">@(rec.AlignedSequence.Substring(rows * columns))</span></td><td>@(rec.AlignedSequence.Length) </td></tr>
+			}
+		}
+</table>

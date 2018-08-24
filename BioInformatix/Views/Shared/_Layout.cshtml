@@ -1,0 +1,85 @@
+﻿@model BioInformatix.Models.BaseViewModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioInformatix</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="@Url.Content("~/Content/kendo/2016.1.412/kendo.common.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.1.412/kendo.mobile.all.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.1.412/kendo.dataviz.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.1.412/kendo.uniform.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.1.412/kendo.dataviz.uniform.min.css")" rel="stylesheet" type="text/css" />
+	  <link rel="stylesheet" href="/Content/jquery.loadingModal.css">
+    <script src="@Url.Content("~/Scripts/kendo/2016.1.412/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.1.412/angular.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.1.412/jszip.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.1.412/kendo.all.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.1.412/kendo.aspnetmvc.min.js")"></script>
+	<script src="/Scripts/jquery.loadingModal.js"></script>
+    <script>
+			$(document).ready(function () {
+				var errMesage = $("#errorBar");
+				var errText = errMesage.text();
+				if (errMesage.text() != "") {
+					errMesage.toggle();
+				}
+            $.ajax({
+                type: "POST",
+                url: "/Home/GetProjectName/",
+                success: function (data) {
+                    $("#projectNameSpan").text("Aktuální projekt: " + data);
+                }
+            });
+            
+			});
+			function hideError() {
+				$("#errorBar").toggle();
+			};
+    </script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("BioInformatix", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Projekty", "Index", "Project")</li>
+                    <li>@Html.ActionLink("Cazy-DataBase", "Index", "Cazy")</li>
+									<li class="dropdown">
+										<a class="dropdown-toggle" data-toggle="dropdown" href="#">Blast
+											<span class="caret"></span>
+										</a>
+										<ul class="dropdown-menu">
+											<li>@Html.ActionLink("Blast - přehled", "Index", "Blast")</li>
+											<li>@Html.ActionLink("Blast - vyhledávání", "BlastSearch", "Blast")</li>
+										</ul>
+									</li>
+                </ul>
+                <span id="projectNameSpan" style="float:right; color:white; padding:10px"></span>
+            </div>
+        </div>
+    </div>
+	
+    <div class="container body-content">
+			<div class="row" id="errorBar" style="background-color:darkorange;color:white;padding:5px;border:solid 1px;text-align:center;display:none" onclick="hideError();"><span>@Model.ErrorMessage</span></div>
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - BioInformatix O.H.</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

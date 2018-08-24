@@ -3,3 +3,32 @@
 ################################################################################
 
 /BioInformatix/bin
+/BioInformatix/obj
+/BioInformatix/ServiceResults/Trees/treeview-Vertebrata_Insecta.svg
+/BioInformatix/ServiceResults/Trees/treeview-insecta-vertebrata.svg
+/BioInformatix/ServiceResults/Trees/treeview-Houby.svg
+/BioInformatix/ServiceResults/Trees/treeview-eucaryota.svg
+/BioInformatix/ServiceResults/simple_phylogeny-S20180501-220201-0374-96935095-pg.tree.ph
+/BioInformatix/ServiceResults/simple_phylogeny-S20180419-233434-0037-50718136-p2m.tree.ph
+/BioInformatix/ServiceResults/simple_phylogeny-S20180419-232818-0670-35280409-p2m.tree.ph
+/BioInformatix/ServiceResults/simple_phylogeny-S20180419-230030-0256-46432294-p2m.tree.ph
+/BioInformatix/ServiceResults/simple_phylogeny-S20180419-214604-0727-10074125-pg.tree.ph
+/BioInformatix/ServiceResults/ncbiblast-S20180501-203812-0526-53448436-p1m.xml.xml.xml.xml
+/BioInformatix/ServiceResults/ncbiblast-S20180501-162103-0343-52294284-pg.xml.xml.xml.xml
+/BioInformatix/ServiceResults/ncbiblast-S20180423-230504-0707-29383424-p2m.xml.xml
+/BioInformatix/ServiceResults/ncbiblast-S20180423-230504-0707-29383424-p2m.complete-visual-svg.svg
+/BioInformatix/ServiceResults/ncbiblast-S20180423-204204-0713-27784397-p1m.xml.xml.xml.xml.xml
+/BioInformatix/ServiceResults/ncbiblast-S20180423-204204-0713-27784397-p1m.xml.xml.complete-visual-svg.svg
+/BioInformatix/ServiceResults/ncbiblast-S20180423-204204-0713-27784397-p1m.xml.xml
+/BioInformatix/ServiceResults/ncbiblast-S20180423-162702-0686-76842864-pg.xml.xml.xml
+/BioInformatix/ServiceResults/clustalo-S20180501-220116-0773-99863598-pg.aln-vienna.vienna
+/BioInformatix/ServiceResults/clustalo-S20180419-233221-0248-31045123-p1m.aln-vienna.vienna
+/BioInformatix/ServiceResults/clustalo-S20180419-232602-0321-41703062-p1m.aln-vienna.vienna
+/BioInformatix/ServiceResults/clustalo-S20180419-225843-0310-58725294-p2m.aln-vienna.vienna
+/BioInformatix/ServiceResults/clustalo-S20180419-204525-0577-923424-p1m.aln-vienna.vienna
+/BioInformatix/ServiceResults/clustalo-S20180417-203604-0330-83265862-p2m.vienna.aln-vienna.vienna
+/BioInformatix/ServiceResults/clustalo-S20180409-225223-0082-21109594-pg.aln-phylip.phylip
+/BioInformatix/ServiceResults/clustalo-S20180409-225121-0233-74948624-p2m.aln-vienna.vienna
+/packages
+/ServiceConnector/Connected Services
+/ServiceConnector/obj

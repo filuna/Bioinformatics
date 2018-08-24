@@ -1,0 +1,22 @@
+﻿@model IList<BioInformatix.Class.AlignRecord>
+    @{ 
+        Layout = "";
+        string content = String.Empty;
+
+    }
+    <table>
+        <tr>
+            <td>
+                @{foreach (BioInformatix.Class.AlignRecord rec in Model) {
+                        content += rec.AlignedSequence + "\n";
+                        <span style="border:solid 1px">@rec.Organism</span><br/>
+                    }
+                }
+            </td><td>
+            <textarea rows="@(Model.Count)">@(content)</textarea>
+            
+            </td>
+        </tr>
+    </table>
+
+

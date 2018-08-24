@@ -1,0 +1,107 @@
+﻿@model BioInformatix.Models.BlastModels.BlastViewModel
+@{
+    ViewBag.Title = "Blast";
+}
+
+<script type="text/javascript">
+    function getParameters() {
+        return {
+            projectId: "@Model.Project.IdString",
+            isBlast: true
+        };
+    }
+
+    function ReloadGrid() {
+        var grid = $("#GridSekvence").data("kendoGrid");
+        grid.dataSource.read();
+    }
+
+    function ReloadAlignmentGrid() {
+        var grid = $("#GridAlignment").data("kendoGrid");
+        grid.dataSource.read();
+    }
+
+    function displayTaxonGroups() {
+        $("#taxonGroups").toggle();
+    }
+
+    function changeSelection(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Project/ChangeSequenceSelection/",
+            data: { seqId: id },
+            success: function (data) {
+            }
+        });
+    }
+
+    function selectMarked() {
+        $.ajax({
+            type: "POST",
+            url: "/Project/ChangeMarkedSequenceSelection/",
+            data: { projectId: "@Model.Project.IdString", taxons: getCheckedGroups(), isBlast: true },
+            success: function (data) {
+                ReloadGrid();
+            }
+        });
+    }
+
+    function unselectMarked() {
+        $.ajax({
+            type: "POST",
+            url: "/Project/UnselectSequenceSelection/",
+            data: { projectId: "@Model.Project.IdString", isBlast: true },
+            success: function (data) {
+                ReloadGrid();
+            }
+        });
+    }
+
+    function delSequence() {
+        $.ajax({
+            type: "POST",
+            url: "/Project/DeleteSequenceForProject/",
+            data: { projectId: "@Model.Project.IdString", isBlast: true },
+            success: function (data) {
+                ReloadGrid();
+            }
+        });
+    }
+</script>
+<h4><span>Blast sekvence pro projekt</span></h4>
+@if(!String.IsNullOrEmpty(Model.Project.BlastSearchGuid)){ 
+<div>
+    <div class="row">
+        <span><input type="button" value="Vybrání taxonomických skupin" class="btn btn-default" onclick="displayTaxonGroups();" /></span>
+        <br />
+        @Html.Partial("LineageSelector", Model.LineageForView)
+
+    </div>
+	<br/>
+    <div class="row">
+        <input type="button" value="Smazání sekvencí z Blast" class="btn btn-success" onclick="delSequence();" />
+        @(Html.Kendo().Grid<BioInformatix.Class.Sequence>()
+        .Name("GridSekvence")
+        .Sortable()
+            .Pageable(pageable => pageable
+            .Refresh(true))
+                                       .Filterable(filter => filter.Enabled(true)
+                                       .Operators(o => o.ForEnums(e => e.Clear()
+                                       .IsEqualTo("Rovná se")
+                                       .IsNotEqualTo("Nerovná se"))))
+            .DataSource(dataSource =>
+            {
+                dataSource.Ajax().Read(read => read.Action("SelectSequeceForProject", "Project").Data("getParameters"))
+              .Model(model => model.Id(p => p.IdString));
+            })
+
+.Columns(columns =>
+{
+    columns.Bound(o => o.Name).Title("Název");
+    columns.Bound(o => o.Organism).Title("Organismus");
+    columns.Bound(o => o.Selected).Title("Sel/Unsel").ClientTemplate("<input type='checkbox' #= Selected ? checked='checked' :'' # onchange=\"changeSelection('#=IdString#')\" />").Width(50);
+}))
+    </div>
+</div>
+}
+

@@ -1,0 +1,71 @@
+﻿@model BioInformatix.Models.InitialBioInformatixModel
+
+@{
+
+}
+<script type="text/javascript">
+    function setProject(e) {
+        window.location.href('/Project/ActualizeUserProject?projectId=' + e);
+    }
+
+    function editProject(e) {
+        window.location.href('/Project/ProjectEdit?projectId=' + e);
+    }
+
+    function openForm() {
+        $("#newProjectForm").toggle();
+    }
+</script>
+
+<div class="row">
+    <button class="btn btn/default" onclick="openForm();"><h4>Nový projekt  <span class="glyphicon-plus glyphicon" style="padding-top:3px"></span></h4></button>
+    @using (Html.BeginForm("SaveProject","Project", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        
+        <div class="form-horizontal" id="newProjectForm" style="display:none">
+            
+            <hr />
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.NewProject.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.NewProject.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.NewProject.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.NewProject.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.NewProject.Description, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.NewProject.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Uložit" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<br/>
+<div class="row">
+    @(Html.Kendo().Grid(Model.Projects)
+    .Name("GridProjects")
+    .Sortable()
+    .Pageable(pageable => pageable
+    .Refresh(true))
+    .Filterable()
+    .Columns(columns =>
+    {
+    columns.Bound(o => o.Name).Title("Název");
+    columns.Bound(o => o.Description).Title("Popis");
+    columns.Bound(o => o.Created).Title("Založen");
+    columns.Template(@<text>
+        <input name="selectedProject" type="button" class="btn-warning" value="Vybrat" onclick="setProject('@item.IdString')" />
+    <input name="editProject" type="button" class="btn-warning" value="Editovat" onclick="editProject('@item.IdString')" /></text>);
+    }))
+</div>
