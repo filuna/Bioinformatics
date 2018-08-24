@@ -33,7 +33,6 @@ namespace BioInformatix.Controllers
         {
           Db = db ?? DependencyResolver.Current.GetService<IMongoRepository>();
           MemberShip = _memb ?? DependencyResolver.Current.GetService<IMongoMembershipService>();
-          if (Db.GetItem<MongoUser>(x=> x.Email == "husak.ondra@gmail.com") == null) Db.AddItem<MongoUser>(new MongoUser() { Email = "husak.ondra@gmail.com", FirstName = "Ondra", SecondName = "Husák", IsApproved = true, Password = "gudath", UserName = "Gothmog" }, ObjectId.Empty);
           if (Db.GetItem<MongoUser>(x => x.Email == "bioinformatix@gmail.com") == null) Db.AddItem<MongoUser>(new MongoUser() { Email = "bioinformatix@gmail.com", FirstName = "TEST_USER", SecondName = "BIOINFORMATIKA", IsApproved = true, Password = "password", UserName = "test_user" }, ObjectId.Empty);
         }
 
